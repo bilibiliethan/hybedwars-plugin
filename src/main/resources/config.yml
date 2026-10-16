@@ -1,0 +1,154 @@
+# ==========================================================
+#  HyBedWars 主配置
+#  MC 1.20.5 / Paper  |  仿 Hypixel 起床战争
+# ==========================================================
+
+# 聊天前缀（支持 & 颜色代码）
+prefix: '&8[&c&lBED&f&lWARS&8] &r'
+
+# ---------- 全局大厅 ----------
+lobby:
+  # 玩家不在游戏中时的等待/观战位置，"world,x,y,z,yaw,pitch"（可指向下方的大厅世界）
+  spawn: ''
+  # 玩家加入服务器后是否强制传送到大厅
+  force-on-join: false
+  # 大厅世界名：留空 = 不启用独立大厅世界（沿用旧逻辑）。
+  # 启用后插件会从 plugins/HyBedWars/maps/<此处世界名>/ 复制一份世界作为大厅，
+  # 就像竞技场地图一样——你需要自行准备一个大厅世界文件夹放到 maps/ 下。
+  world: ''
+  # 大厅 NPC：站在大厅世界里，玩家右键即可加入对应地图。
+  # 每条格式：arena=地图名;location=x,y,z[,yaw,pitch]
+  #   location 为相对大厅世界的坐标，不要带世界名（世界名由上面的 world 决定）
+  #   arena 必须是已用 /bw arena create 创建过的地图名
+  npcs: []
+
+# ---------- 游戏流程 ----------
+game:
+  # 达到最少人数后的准备倒计时（秒）
+  start-countdown: 30
+  # 房间满员时的快速倒计时（秒）
+  full-countdown: 10
+  # 死亡后重生等待（秒）
+  respawn-delay: 5
+  # 虚空判定高度（低于该 Y 值视为掉入虚空）
+  void-y: 0
+  # 最大建筑高度（超过则无法放置方块）
+  max-build-y: 110
+  # 敌方床周围禁止放置方块的半径
+  bed-protect-radius: 5
+  # 敌方进入己方基地多少格内触发陷阱
+  trap-radius: 8
+  # 生成器周围同种掉落物超过该数量后暂缓生成
+  generator-item-limit: 48
+  # 开局后禁止玩家执行的指令（留空表示不限制）
+  blocked-commands:
+    - '/pl'
+    - '/plugins'
+    - '/bukkit:pl'
+    - '/version'
+  # 允许玩家在游戏中执行的指令白名单（前缀匹配）
+  allowed-commands:
+    - '/bw'
+    - '/bedwars'
+    - '/qcw'
+    - '/qichuang'
+    - '/msg'
+    - '/r'
+    - '/tell'
+
+# ---------- 地图世界管理 ----------
+worlds:
+  # true = 每局从 plugins/HyBedWars/maps/<地图名>/ 复制一份干净世界，游戏结束删除
+  # false = 直接使用服务器已有的世界（世界名由 /bw arena setworld 指定），不做还原
+  copy-template: true
+  # 地图模板所在子目录（相对于插件数据目录）
+  template-folder: maps
+  # 是否禁止世界自动保存（建议保持 true，防止污染模板）
+  disable-autosave: true
+
+# ---------- 资源生成速度（秒/个，数组下标 = 等级-1） ----------
+# 铁、金受"熔炉"升级影响（等级 1~4）
+generators:
+  iron:   [1.5, 1.2, 0.9, 0.6]
+  gold:   [8.0, 6.0, 4.0, 2.0]
+  # 钻石、绿宝石为全图公共生成器，按时间自动升级
+  diamond: [30.0, 20.0, 15.0]
+  emerald: [60.0, 45.0, 30.0]
+  # 第 N 次升级发生的时刻（秒）
+  diamond-upgrade-at: [360, 720]
+  emerald-upgrade-at: [720, 1440]
+
+# ---------- 时间事件 ----------
+events:
+  # 游戏进行到该秒数时所有床自动消失
+  bed-gone: 1800
+  # 游戏进行到该秒数时强制结束（存活队伍最多者获胜）
+  game-end: 2700
+
+# ---------- 战斗手感 ----------
+combat:
+  # 火球飞行速度
+  fireball-speed: 1.35
+  # 火球爆炸威力
+  fireball-power: 2.2
+  # 火球是否破坏玩家放置的方块
+  fireball-break-blocks: true
+  # TNT 引信（秒）
+  tnt-fuse: 2.0
+  # 末影珍珠冷却（秒）
+  pearl-cooldown: 3
+  # 击杀后是否让被击杀者掉落资源（床还在时）
+  drop-items-on-death: true
+  # 保护期（开局后多少秒内无法造成伤害）
+  damage-immunity: 0
+
+# ---------- 统计 ----------
+stats:
+  # 自动保存间隔（秒）
+  save-interval: 300
+  # 升级所需经验（星级 = 1 + 总经验 / 该值）
+  xp-per-level: 5000
+  # 各项行为获得的经验
+  xp:
+    win: 100
+    kill: 10
+    final-kill: 30
+    bed-break: 25
+    play: 5
+
+# ---------- 经验模式 ----------
+# 经验模式（模式参数 experience / xp / 经验）下：
+#   捡到的铁锭、金锭、钻石、绿宝石不会进入背包，而是按下面的比例转化为经验值；
+#   商店里的所有商品与队伍升级都改用经验结算（原价格 × 对应资源的经验价值）。
+# 例：羊毛 4 铁 → 4 经验；木板 4 金 → 16 经验；钻石剑 4 绿宝石 → 120 经验。
+experience:
+  values:
+    iron: 1
+    gold: 4
+    diamond: 12
+    emerald: 30
+  # 击杀 / 破坏床额外奖励的经验（设为 0 关闭）
+  kill-reward: 10
+  bed-reward: 25
+  # 每次资源转化为经验时是否在快捷栏上方提示
+  pickup-message: true
+
+# ---------- 商店 ----------
+shop:
+  # 点击商店物品时是否需要潜行
+  require-sneak: false
+  # 潜行点击一次购买的次数上限（普通点击为 1 次）
+  bulk-buy-amount: 5
+  # 购买失败时退还资源
+  refund-on-fail: true
+
+# ---------- 杂项 ----------
+misc:
+  # 是否在侧边栏显示计分板
+  scoreboard: true
+  # 是否使用队伍颜色显示玩家名牌
+  team-nametag-color: true
+  # 关闭友军伤害
+  friendly-fire: false
+  # 禁止在等待大厅破坏/放置方块
+  lobby-protect: true

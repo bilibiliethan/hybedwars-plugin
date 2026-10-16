@@ -1,0 +1,20 @@
+# Build output
+target/
+
+# Compiled classes (outside target/)
+*.class
+
+# Logs
+*.log
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# WorkBuddy project metadata (not part of the plugin)
+.workbuddy/
