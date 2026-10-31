@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HyBedWars 使用说明</title>
+<style>
+  :root{
+    --bg:#f6f7f9;
+    --surface:#ffffff;
+    --surface-2:#f0f2f6;
+    --text:#1e2733;
+    --muted:#5d6b7a;
+    --accent:#d64545;
+    --accent-2:#b23232;
+    --accent-soft:#fdeceb;
+    --border:#e2e7ee;
+    --green:#2f855a;
+    --green-soft:#eef7f1;
+    --code-bg:#f4f6f9;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(16,24,40,.04),0 8px 24px rgba(16,24,40,.06);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:84px}
+  body{
+    margin:0;font-size:15.5px;line-height:1.75;color:var(--text);background:var(--bg);
+    font-family:system-ui,-apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent-2)}
+  code{
+    font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    font-size:13.5px;background:var(--code-bg);border:1px solid var(--border);
+    border-radius:6px;padding:1.5px 6px;color:var(--accent-2);white-space:nowrap;
+  }
+  pre{
+    position:relative;background:var(--code-bg);border:1px solid var(--border);
+    border-radius:10px;padding:14px 16px;overflow:auto;margin:14px 0 18px;
+  }
+  pre code{background:none;border:none;padding:0;color:#1f2933;white-space:pre}
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:14px;
+    padding:11px 26px;background:rgba(255,255,255,.92);
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.2px}
+  .brand .logo{
+    width:30px;height:30px;border-radius:8px;display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--accent),#f08a5d);color:#fff;font-weight:900;font-size:12px;
+  }
+  .brand small{font-weight:600;color:var(--muted);font-size:12px}
+  .topbar .spacer{flex:1}
+  .topbar .ver{
+    font-size:12px;font-weight:700;color:var(--accent-2);background:var(--accent-soft);
+    border:1px solid #f6c9c7;border-radius:999px;padding:3px 10px;
+  }
+  .menu-btn{
+    display:none;align-items:center;gap:6px;border:1px solid var(--border);background:#fff;
+    color:var(--text);border-radius:9px;padding:7px 11px;font-size:13px;font-weight:600;cursor:pointer;
+  }
+
+  /* ---------- Layout ---------- */
+  .layout{
+    max-width:1180px;margin:0 auto;padding:26px 26px 80px;
+    display:grid;grid-template-columns:250px minmax(0,1fr);gap:34px;align-items:start;
+  }
+  .sidebar{
+    position:sticky;top:76px;align-self:start;max-height:calc(100vh - 100px);overflow:auto;
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:14px 10px;box-shadow:var(--shadow);
+  }
+  .toc-title{
+    font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+    font-weight:800;padding:2px 12px 8px;
+  }
+  .toc a{
+    display:block;padding:7px 12px;border-radius:9px;color:var(--muted);
+    text-decoration:none;font-size:14px;font-weight:500;transition:background .15s,color .15s;
+  }
+  .toc a:hover{background:var(--surface-2);color:var(--text)}
+  .toc a.active{background:var(--accent-soft);color:var(--accent-2);font-weight:700}
+
+  main{min-width:0}
+  section{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:26px 30px;margin-bottom:22px;box-shadow:var(--shadow);scroll-margin-top:84px;
+  }
+  h2{
+    font-size:21px;margin:0 0 6px;display:flex;align-items:center;gap:10px;line-height:1.4;
+  }
+  h2::before{content:"";width:5px;height:20px;border-radius:3px;background:var(--accent);flex:none}
+  h3{font-size:16px;margin:24px 0 6px;color:#25313f}
+  h4{font-size:14.5px;margin:18px 0 4px;color:#374151}
+  p{margin:8px 0}
+  ul,ol{margin:8px 0;padding-left:22px}
+  li{margin:3px 0}
+  .muted{color:var(--muted);font-weight:400}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative;overflow:hidden;background:linear-gradient(135deg,#ffffff 0%,#fdf3f2 60%,#fdecec 100%);
+    border:1px solid var(--border);border-radius:20px;padding:34px 34px 30px;box-shadow:var(--shadow);
+    margin-bottom:22px;
+  }
+  .hero::before,.hero::after{content:"";position:absolute;border-radius:50%;pointer-events:none}
+  .hero::before{width:220px;height:220px;right:-70px;top:-90px;background:radial-gradient(circle,#f9d4d1,transparent 70%)}
+  .hero::after{width:160px;height:160px;right:120px;bottom:-100px;background:radial-gradient(circle,#ffe3cd,transparent 70%)}
+  .hero h1{margin:0;font-size:30px;letter-spacing:.3px;line-height:1.3}
+  .hero h1 span{color:var(--accent)}
+  .hero .sub{color:var(--muted);margin:8px 0 0;font-size:15px}
+  .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+  .badge{
+    font-size:12.5px;font-weight:600;padding:4px 11px;border-radius:999px;
+    background:var(--surface);border:1px solid var(--border);color:var(--muted);
+  }
+  .badge.hot{background:var(--accent-soft);border-color:#f6c9c7;color:var(--accent-2)}
+
+  .qgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}
+  .qcard{
+    display:block;text-decoration:none;color:inherit;background:var(--surface);
+    border:1px solid var(--border);border-radius:12px;padding:14px;transition:.16s;
+  }
+  .qcard:hover{border-color:#f0b9b6;box-shadow:0 6px 18px rgba(214,69,69,.12);transform:translateY(-1px)}
+  .qcard .t{font-weight:700;font-size:14.5px}
+  .qcard .d{font-size:12.5px;color:var(--muted);line-height:1.55;margin-top:3px}
+
+  /* ---------- Tables ---------- */
+  .table-wrap{overflow-x:auto;margin:12px 0 6px}
+  table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:520px}
+  th,td{border:1px solid var(--border);padding:9px 12px;text-align:left;vertical-align:top}
+  th{background:var(--surface-2);font-weight:700;color:#334155;white-space:nowrap}
+  tbody tr:nth-child(even){background:#fbfcfd}
+  tbody tr:hover{background:var(--accent-soft)}
+  td code{white-space:nowrap}
+
+  /* ---------- Steps ---------- */
+  .steps{list-style:none;padding:0;margin:16px 0 0;counter-reset:step}
+  .steps li{position:relative;padding:0 0 20px 46px;counter-increment:step}
+  .steps li::before{
+    content:counter(step);position:absolute;left:0;top:1px;width:30px;height:30px;border-radius:50%;
+    background:var(--accent-soft);color:var(--accent-2);border:1px solid #f6c9c7;
+    font-weight:800;font-size:14px;display:grid;place-items:center;
+  }
+  .steps li:not(:last-child)::after{
+    content:"";position:absolute;left:14.5px;top:33px;bottom:2px;width:2px;background:var(--border);
+  }
+  .steps li strong{display:block;margin-bottom:2px}
+
+  /* ---------- Callouts ---------- */
+  .note{
+    border-left:4px solid var(--accent);background:var(--accent-soft);color:#7a2b2b;
+    padding:12px 16px;border-radius:8px;margin:16px 0;font-size:14.5px;
+  }
+  .tip{border-left-color:var(--green);background:var(--green-soft);color:#245c3f}
+  .note strong{font-weight:800}
+
+  /* ---------- Filter ---------- */
+  .filter{display:flex;gap:10px;align-items:center;margin:12px 0 6px}
+  .filter input{
+    flex:1;max-width:360px;padding:9px 12px;border:1px solid var(--border);border-radius:9px;
+    font-size:14px;background:#fff;color:var(--text);outline:none;font-family:inherit;
+  }
+  .filter input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .filter .hint{font-size:12.5px;color:var(--muted)}
+  tr.hidden{display:none}
+
+  /* ---------- Copy button ---------- */
+  .copy{
+    position:absolute;top:8px;right:8px;font-size:12px;padding:4px 9px;border-radius:6px;
+    border:1px solid var(--border);background:#fff;color:var(--muted);cursor:pointer;
+    font-family:inherit;transition:.15s;
+  }
+  .copy:hover{color:var(--accent-2);border-color:#f0b9b6}
+
+  /* ---------- Footer ---------- */
+  footer{max-width:1180px;margin:0 auto;padding:0 26px 60px;color:var(--muted);font-size:13px;text-align:center}
+  footer .dot{opacity:.4;margin:0 8px}
+
+  /* ---------- To top ---------- */
+  #toTop{
+    position:fixed;right:24px;bottom:24px;width:44px;height:44px;border-radius:50%;
+    border:1px solid var(--border);background:#fff;color:var(--accent-2);font-size:18px;
+    cursor:pointer;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.2s;z-index:40;
+  }
+  #toTop.show{opacity:1;pointer-events:auto}
+  #toTop:hover{background:var(--accent-soft)}
+
+  .backdrop{display:none;position:fixed;inset:0;background:rgba(15,23,42,.35);z-index:55}
+
+  /* ---------- Mobile ---------- */
+  @media (max-width:900px){
+    .layout{grid-template-columns:1fr;padding:16px 16px 70px;gap:0}
+    .sidebar{
+      position:fixed;top:0;left:0;height:100vh;width:270px;z-index:60;border-radius:0;
+      transform:translateX(-105%);transition:transform .25s ease;max-height:none;padding-top:22px;
+    }
+    body.nav-open .sidebar{transform:translateX(0)}
+    body.nav-open .backdrop{display:block}
+    .menu-btn{display:inline-flex}
+    .qgrid{grid-template-columns:repeat(2,1fr)}
+    section{padding:20px 18px}
+    .hero{padding:24px 20px}
+    .hero h1{font-size:24px}
+    .topbar{padding:10px 16px}
+    footer{padding:0 16px 50px}
+  }
+  @media (max-width:520px){
+    .qgrid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">BW</span>
+    <span>HyBedWars<small> 使用说明</small></span>
+  </div>
+  <div class="spacer"></div>
+  <span class="ver">v1.0.0</span>
+  <button class="menu-btn" id="menuBtn" type="button">☰ 目录</button>
+</header>
+
+<div class="backdrop" id="backdrop"></div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="toc-title">目录</div>
+    <nav class="toc" id="toc">
+      <a href="#intro">简介</a>
+      <a href="#requirements">环境要求</a>
+      <a href="#install">安装与编译</a>
+      <a href="#quickstart">快速开始</a>
+      <a href="#map-setup">搭建一张地图</a>
+      <a href="#modes">游戏模式</a>
+      <a href="#commands">命令速查</a>
+      <a href="#mechanics">玩法机制</a>
+      <a href="#experience">经验模式</a>
+      <a href="#config">配置文件</a>
+      <a href="#permissions">权限</a>
+      <a href="#faq">常见问题</a>
+    </nav>
+  </aside>
+
+  <main>
+    <div class="hero">
+      <h1>Hy<span>Bed</span>Wars 使用说明</h1>
+      <p class="sub">仿 Hypixel 起床战争插件 · Minecraft 1.20.5 · Paper API · Java 21</p>
+      <div class="badges">
+        <span class="badge hot">5 种游戏模式</span>
+        <span class="badge">床战 / 经济 / 商店 / 升级</span>
+        <span class="badge">模板地图 · 每局还原</span>
+        <span class="badge">经验模式</span>
+        <span class="badge">/bw reload 热重载</span>
+      </div>
+      <div class="qgrid">
+        <a class="qcard" href="#install"><div class="t">① 安装</div><div class="d">编译出 jar，丢进 plugins</div></a>
+        <a class="qcard" href="#map-setup"><div class="t">② 搭地图</div><div class="d">出生点 / 床 / 资源点</div></a>
+        <a class="qcard" href="#commands"><div class="t">③ 查命令</div><div class="d">玩家与管理指令速查</div></a>
+        <a class="qcard" href="#faq"><div class="t">④ 排错</div><div class="d">地图不加载 / 卡旁观</div></a>
+      </div>
+    </div>
+
+    <section id="intro">
+      <h2>简介</h2>
+      <p>
+        HyBedWars 是一个对标 Hypixel 起床战争的完整玩法插件：每队守护一张床，床在则死亡可复活，
+        床毁则死亡即出局；用资源买装备、升级队伍、拆掉对手的床，最后存活的一队获胜。
+      </p>
+      <p>插件已内置：完整商店（7 大分类）、队伍升级、陷阱、资源生成器（铁/金/钻石/绿宝石）、
+        计分板、战绩与星级、独立大厅世界与大厅 NPC、以及“资源自动转经验”的经验模式。</p>
+      <div class="note tip">
+        <strong>核心设计：</strong>地图以「模板世界」形式存放，每局开始时复制出一份干净世界，游戏结束即删除，
+        所以玩家永远无法永久破坏地图本体。
+      </div>
+    </section>
+
+    <section id="requirements">
+      <h2>环境要求</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>项目</th><th>要求</th></tr></thead>
+          <tbody>
+            <tr><td>服务端</td><td>Paper <strong>1.20.5</strong>（同版本 Spigot 亦可；api-version 1.20）</td></tr>
+            <tr><td>Java</td><td><strong>21</strong>（1.20.5 强制要求）</td></tr>
+            <tr><td>编译</td><td>Maven 3.8+</td></tr>
+            <tr><td>Folia</td><td>不支持（<code>folia-supported: false</code>）</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="install">
+      <h2>安装与编译</h2>
+      <h3>1. 编译出 jar</h3>
+      <pre><code>cd HyBedWars
+mvn clean package</code></pre>
+      <p>产物：<code>target/HyBedWars-1.0.0.jar</code>。把它放进服务端的 <code>plugins/</code> 目录，重启服务器即可。</p>
+
+      <div class="note">
+        <strong>关于 <code>local-repo/</code>：</strong>Paper 1.20.5 官方 <code>paper-api</code> 是快照包，其 POM 引用的
+        <code>adventure-bom:4.17.0-SNAPSHOT</code> 已下架，直接依赖官方坐标会构建失败。
+        项目把修正依赖内置在 <code>local-repo/</code>，所以 <code>mvn clean package</code> <strong>开箱即可通过</strong>，无需额外配置。
+      </div>
+
+      <h3>2. 启动后生成的配置</h3>
+      <p>首次启动会在 <code>plugins/HyBedWars/</code> 下生成：</p>
+      <ul>
+        <li><code>config.yml</code> — 全局设置</li>
+        <li><code>messages.yml</code> — 全部提示文本（支持 <code>&amp;</code> 颜色码与 <code>%占位符%</code>）</li>
+        <li><code>shop.yml</code> — 商店价格与上下架</li>
+        <li><code>arenas.yml</code> — 地图数据（由命令维护）</li>
+        <li><code>stats.yml</code> — 玩家战绩</li>
+        <li><code>maps/&lt;地图名&gt;/</code> — 地图模板世界</li>
+      </ul>
+    </section>
+
+    <section id="quickstart">
+      <h2>快速开始</h2>
+      <p>地图配置完成后，最简单的开局方式：</p>
+      <pre><code>/bw join experience   # 加入经验模式（4队×8人）的等待房
+/bw start &lt;地图名&gt;     # 管理员强制开始一张地图</code></pre>
+      <p>玩家命令：</p>
+      <ul>
+        <li><code>/bw join [模式]</code> — 随机加入该模式的等待房（不带参数默认 <code>solo</code>）</li>
+        <li><code>/bw leave</code> — 离开当前对局</li>
+        <li><code>/bw list</code> — 查看所有地图与状态</li>
+        <li><code>/bw stats [玩家]</code> — 查看战绩</li>
+        <li><code>/bw top [kills|wins|beds|level|xp]</code> — 排行榜</li>
+      </ul>
+      <div class="note tip"><strong>提示：</strong>主命令 <code>/bw</code> 的别名还有 <code>/bedwars</code>、<code>/qcw</code>、<code>/qichuang</code>。</div>
+    </section>
+
+    <section id="map-setup">
+      <h2>搭建一张地图（完整流程）</h2>
+      <p>以下以创建一张四人四队地图 <code>mymap</code> 为例。</p>
+
+      <ol class="steps">
+        <li>
+          <strong>创建地图</strong>
+          <pre><code>/bw arena create mymap quads</code></pre>
+          创建名为 <code>mymap</code> 的四人四队地图。
+        </li>
+        <li>
+          <strong>进入编辑模式</strong>
+          <pre><code>/bw arena edit mymap</code></pre>
+          插件会生成一个超平坦虚空世界并把创造模式的你传送进去，可自由建造岛屿、中心岛与商店房。
+        </li>
+        <li>
+          <strong>设置等待点与观战点</strong>
+          <pre><code>/bw arena setlobby       # 站在等待区执行
+/bw arena setspectator   # 站在观战位执行</code></pre>
+        </li>
+        <li>
+          <strong>设置商店与升级 NPC 位置</strong>
+          <pre><code>/bw arena setshop        # 商店村民位置
+/bw arena setupgrades    # 升级村民位置</code></pre>
+        </li>
+        <li>
+          <strong>逐个设置队伍（红 / 蓝 / 绿 / 黄）</strong>
+          <pre><code>/bw arena setspawn red    # 队伍出生点
+/bw arena setgen red      # 队伍铁/金生成点
+/bw arena setbed red      # 队伍床（站在床上或对着床执行）</code></pre>
+          <span class="muted">setbed 会自动读取床的朝向，每局开始时按记录位置与朝向重建队伍颜色的床。</span>
+        </li>
+        <li>
+          <strong>设置公共生成器（建议至少各 1 个）</strong>
+          <pre><code>/bw arena adddiamond   # 中心岛钻石生成点
+/bw arena addemerald   # 中心岛绿宝石生成点</code></pre>
+          可在末尾加数字自定义刷新间隔（秒/个）：<code>/bw arena adddiamond 20</code>。
+        </li>
+        <li>
+          <strong>（可选）限制建造区域</strong>
+          <pre><code>/bw arena pos1
+/bw arena pos2</code></pre>
+        </li>
+        <li>
+          <strong>检查配置是否完整</strong>
+          <pre><code>/bw arena info</code></pre>
+          会列出缺失项；配置完整时提示“可以开始游戏”。
+        </li>
+        <li>
+          <strong>保存并退出编辑</strong>
+          <pre><code>/bw arena done</code></pre>
+          地图模板写入 <code>plugins/HyBedWars/maps/mymap/</code>，之后 <code>/bw start mymap</code> 即可开局。
+        </li>
+      </ol>
+
+      <div class="note">
+        <strong>注意：</strong>如果地图坐标全部为空，开局会进不去、死亡也会异常。务必先执行
+        <code>/bw arena info</code> 确认所有队伍出生点 / 床 / 资源点都已设置，再 <code>done</code>。
+      </div>
+    </section>
+
+    <section id="modes">
+      <h2>游戏模式</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>模式参数</th><th>名称</th><th>队伍</th><th>每队</th><th>总人数</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>solo</code></td><td>单人八队</td><td>8</td><td>1</td><td>8</td><td>红/蓝/绿/黄/青/白/粉/灰</td></tr>
+            <tr><td><code>doubles</code></td><td>双人八队</td><td>8</td><td>2</td><td>16</td><td>同上 8 色</td></tr>
+            <tr><td><code>quads</code></td><td>四人四队</td><td>4</td><td>4</td><td>16</td><td>红/蓝/绿/黄</td></tr>
+            <tr><td><code>mini</code></td><td>四队八人</td><td>4</td><td>2</td><td>8</td><td>快速局，红/蓝/绿/黄</td></tr>
+            <tr><td><code>experience</code></td><td>经验四队八人</td><td>4</td><td>8</td><td>32</td><td><strong>经验模式</strong>：资源自动转经验、商店用经验结算</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="muted">别名举例：<code>s</code>/<code>单人</code>、<code>duo</code>/<code>双人</code>、<code>q</code>/<code>4v4v4v4</code>、
+        <code>m</code>/<code>体验</code>、<code>xp</code>/<code>exp</code>/<code>经验</code>/<code>经验模式</code>。</p>
+      <div class="note tip">
+        <strong>经验模式的队伍可单独开关：</strong>进入编辑模式后执行 <code>/bw arena toggleexp</code>，
+        开关会写入 <code>arenas.yml</code> 的 <code>experience-economy</code> 字段，与游戏模式解耦，随时可切换。
+      </div>
+    </section>
+
+    <section id="commands">
+      <h2>命令速查</h2>
+      <p>主命令 <code>/bw</code>（别名 <code>/bedwars</code>、<code>/qcw</code>、<code>/qichuang</code>）。</p>
+      <div class="filter">
+        <input id="cmdFilter" type="search" placeholder="输入关键字筛选命令，例如：setgen、床、钻石…">
+        <span class="hint">实时过滤下方表格</span>
+      </div>
+
+      <h3>玩家命令</h3>
+      <div class="table-wrap">
+        <table class="cmd-table">
+          <thead><tr><th>命令</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>/bw join [模式]</code></td><td>随机加入一张该模式的等待房</td></tr>
+            <tr><td><code>/bw leave</code></td><td>离开当前对局</td></tr>
+            <tr><td><code>/bw list</code></td><td>查看所有地图与状态</td></tr>
+            <tr><td><code>/bw stats [玩家]</code></td><td>查看战绩（星级 / 胜负 / 击杀 / 破床 / K-D）</td></tr>
+            <tr><td><code>/bw top [kills|wins|beds|level|xp]</code></td><td>排行榜</td></tr>
+            <tr><td><code>/bw help</code></td><td>帮助</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>管理命令 <span class="muted">（权限 <code>hybedwars.admin</code>）</span></h3>
+      <div class="table-wrap">
+        <table class="cmd-table">
+          <thead><tr><th>命令</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>/bw start &lt;地图&gt;</code></td><td>强制开始</td></tr>
+            <tr><td><code>/bw stop &lt;地图&gt;</code></td><td>强制结束</td></tr>
+            <tr><td><code>/bw reload</code></td><td>重载 config / messages / shop / arenas</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>地图配置子命令 <span class="muted">（/bw arena …）</span></h3>
+      <div class="table-wrap">
+        <table class="cmd-table">
+          <thead><tr><th>命令</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>create &lt;名称&gt; &lt;模式&gt;</code></td><td>创建地图</td></tr>
+            <tr><td><code>edit &lt;名称&gt;</code></td><td>进入地图世界编辑</td></tr>
+            <tr><td><code>done</code></td><td>保存模板并退出编辑</td></tr>
+            <tr><td><code>setworld</code></td><td>把当前世界绑定为地图世界</td></tr>
+            <tr><td><code>setlobby</code></td><td>设置等待点</td></tr>
+            <tr><td><code>setspectator</code></td><td>设置观战点</td></tr>
+            <tr><td><code>setshop</code></td><td>设置商店 NPC 位置</td></tr>
+            <tr><td><code>setupgrades</code></td><td>设置升级 NPC 位置</td></tr>
+            <tr><td><code>setspawn &lt;队伍&gt;</code></td><td>设置队伍出生点</td></tr>
+            <tr><td><code>setbed &lt;队伍&gt;</code></td><td>设置队伍床（自动记录朝向）</td></tr>
+            <tr><td><code>setgen &lt;队伍&gt; [间隔]</code></td><td>设置队伍铁/金生成点，可加刷新间隔（秒/个）</td></tr>
+            <tr><td><code>adddiamond [间隔]</code></td><td>添加公共钻石生成点，可加刷新间隔</td></tr>
+            <tr><td><code>addemerald [间隔]</code></td><td>添加公共绿宝石生成点，可加刷新间隔</td></tr>
+            <tr><td><code>cleargen</code></td><td>清空全部公共生成器</td></tr>
+            <tr><td><code>toggleexp</code></td><td>开关当前地图的经验模式</td></tr>
+            <tr><td><code>pos1</code> / <code>pos2</code></td><td>设置建造区域对角</td></tr>
+            <tr><td><code>save</code></td><td>写入 arenas.yml</td></tr>
+            <tr><td><code>info [地图]</code></td><td>查看地图配置与缺失项</td></tr>
+            <tr><td><code>delete &lt;名称&gt;</code></td><td>删除地图及模板</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note tip">
+        <strong>刷新间隔怎么用：</strong><code>setgen</code> / <code>adddiamond</code> / <code>addemerald</code> 末尾的可选数字
+        = 该资源点每个的刷新间隔（秒）。不填则使用 <code>config.yml</code> 默认速率。
+      </div>
+    </section>
+
+    <section id="mechanics">
+      <h2>玩法机制</h2>
+
+      <h3>资源生成器</h3>
+      <ul>
+        <li><strong>队伍生成器</strong>：每队出生点各刷铁与金，速度随「熔炉」升级提升。</li>
+        <li><strong>公共生成器</strong>：钻石与绿宝石，按游戏时间自动升级速度。</li>
+        <li>掉落物不会消失，但同一生成点附近同种掉落超过 48 个会暂停刷新，避免卡服。</li>
+      </ul>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>资源</th><th>各等级间隔（秒/个）</th><th>升级时间点</th></tr></thead>
+          <tbody>
+            <tr><td>铁锭</td><td>1.5 → 1.2 → 0.9 → 0.6</td><td>随熔炉等级</td></tr>
+            <tr><td>金锭</td><td>8 → 6 → 4 → 2</td><td>随熔炉等级</td></tr>
+            <tr><td>钻石</td><td>30 → 20 → 15</td><td>6 分钟 / 12 分钟</td></tr>
+            <tr><td>绿宝石</td><td>60 → 45 → 30</td><td>12 分钟 / 24 分钟</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>床与死亡</h3>
+      <ul>
+        <li>每局开始时按记录位置与朝向重建队伍颜色的床。</li>
+        <li>敌方床周围 5 格内禁止放置方块（防「包床」）。</li>
+        <li>床被破坏后，该队成员死亡即<strong>最终击杀</strong>，直接进入旁观。</li>
+        <li>床还在时死亡 → 5 秒后复活，保留已购买的永久装备（剑/镐/斧/剪刀/护甲/弓）。</li>
+        <li>掉进虚空（Y &lt; 0）直接死亡。</li>
+        <li>死斗时间轴：30 分钟所有床自动消失；45 分钟强制结束，存活人数最多的队伍获胜。</li>
+      </ul>
+
+      <h3>商店（右键商店村民）</h3>
+      <p>7 大分类：方块 / 近战武器 / 护甲 / 工具 / 远程武器 / 药水 / 功能道具。</p>
+      <ul>
+        <li>货币为背包里的实际物品：铁锭、金锭、钻石、绿宝石；<strong>经验模式则统一用经验值结算</strong>。</li>
+        <li>普通点击买 1 次，<strong>潜行点击一次买 5 次</strong>（可在 <code>shop.bulk-buy-amount</code> 调整）。</li>
+        <li>永久装备死亡后保留，且不会买到比当前更低的等级。</li>
+      </ul>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>特殊道具</th><th>行为</th></tr></thead>
+          <tbody>
+            <tr><td>火球</td><td>右键发射，炸开玩家放置的方块（不破坏地图与床）</td></tr>
+            <tr><td>TNT</td><td>放下即点燃，引信 2 秒</td></tr>
+            <tr><td>搭桥蛋</td><td>投掷后自动铺出 3 格宽的队伍颜色羊毛桥</td></tr>
+            <tr><td>床虱</td><td>召唤蠹虫并自动锁定最近敌人，30 秒后消失</td></tr>
+            <tr><td>梦境守卫</td><td>召唤铁傀儡守家，120 秒后消失</td></tr>
+            <tr><td>紧凑弹出塔</td><td>放置后原地升起 4 格高的羊毛塔带梯子</td></tr>
+            <tr><td>魔法牛奶</td><td>30 秒内不触发敌方陷阱</td></tr>
+            <tr><td>海绵</td><td>放置后吸干半径 5 格内的水</td></tr>
+            <tr><td>水桶</td><td>可放置，8 秒后自动清除，防止地图被永久改造</td></tr>
+            <tr><td>末影珍珠</td><td>3 秒冷却（可配置）</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>队伍升级（右键升级村民）</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>升级</th><th>等级</th><th>价格（钻石）</th><th>效果</th></tr></thead>
+          <tbody>
+            <tr><td>锋利之剑</td><td>1</td><td>4</td><td>全队剑 +锋利 I</td></tr>
+            <tr><td>护甲保护</td><td>4</td><td>2 / 4 / 8 / 16</td><td>全队护甲逐级 +保护</td></tr>
+            <tr><td>急速挖掘</td><td>2</td><td>2 / 4</td><td>全队永久急迫</td></tr>
+            <tr><td>熔炉</td><td>4</td><td>4 / 8 / 12 / 16</td><td>提升铁/金生成速度</td></tr>
+            <tr><td>治疗池</td><td>1</td><td>2</td><td>基地范围内持续回血</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>陷阱（最多同时排队 3 个，敌人进入基地 8 格内触发，每种限购一次）：</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>陷阱</th><th>价格</th><th>效果</th></tr></thead>
+          <tbody>
+            <tr><td>出其不意</td><td>1 钻</td><td>入侵者失明 + 减速 8 秒</td></tr>
+            <tr><td>反攻</td><td>2 钻</td><td>全队获得速度 I + 跳跃 II 15 秒</td></tr>
+            <tr><td>警报</td><td>3 钻</td><td>暴露所有隐身入侵者 15 秒</td></tr>
+            <tr><td>疲劳</td><td>4 钻</td><td>入侵者获得挖掘疲劳 10 秒</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>计分板与战绩</h3>
+      <p>侧边栏实时显示地图、模式、游戏时间、下一事件倒计时、各队存活人数与床状态（✔/✖）、个人击杀与破床数，
+        并用队伍颜色给玩家名字上色、关闭队内友伤。</p>
+      <p>战绩存于 <code>plugins/HyBedWars/stats.yml</code>，内存缓存 + 定时异步落盘。
+        经验：胜利 +100、击杀 +10、最终击杀 +30、破床 +25、每局 +5；每 5000 经验升 1 星（均可配置）。</p>
+    </section>
+
+    <section id="experience">
+      <h2>经验模式怎么玩</h2>
+      <p>经验模式把「捡资源 → 攒货币 → 买装备」压缩成更快的循环：</p>
+      <ol>
+        <li><strong>捡到即转化</strong>——地上的铁/金/钻石/绿宝石不进背包，拾取瞬间按比例变成经验值。</li>
+        <li><strong>商店全面改用经验结算</strong>——商品价格 = 原资源价 × 该资源的经验价值。</li>
+        <li><strong>计分板 / 商店首页实时显示经验余额</strong>。</li>
+      </ol>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>资源</th><th>单份经验价值</th><th>商店等价示例</th></tr></thead>
+          <tbody>
+            <tr><td>铁锭</td><td>1</td><td>羊毛 ×16 = 4 经验</td></tr>
+            <tr><td>金锭</td><td>4</td><td>木板 ×16 = 16 经验、金苹果 = 12 经验</td></tr>
+            <tr><td>钻石</td><td>12</td><td>锋利之剑 = 48 经验、治疗池 = 24 经验</td></tr>
+            <tr><td>绿宝石</td><td>30</td><td>钻石剑 = 120 经验、末影珍珠 = 120 经验</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>额外奖励：<strong>击杀 +10 经验、破坏床 +25 经验</strong>（<code>experience.kill-reward</code> / <code>bed-reward</code>，设为 0 可关闭）。</p>
+      <div class="note">
+        <strong>想在普通模式地图也开经验经济？</strong>进入编辑模式执行 <code>/bw arena toggleexp</code>，
+        开关写进 <code>arenas.yml</code> 的 <code>experience-economy</code> 字段，与模式无关、随时可切。
+      </div>
+    </section>
+
+    <section id="config">
+      <h2>配置文件</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>文件</th><th>作用</th></tr></thead>
+          <tbody>
+            <tr><td><code>config.yml</code></td><td>全局设置：大厅、倒计时、生成速度、事件时间轴、战斗手感、统计、商店、经验模式、杂项</td></tr>
+            <tr><td><code>messages.yml</code></td><td>全部提示文本，支持 <code>&amp;</code> 颜色代码与 <code>%占位符%</code></td></tr>
+            <tr><td><code>shop.yml</code></td><td>商店商品价格与上下架（改 <code>price</code> / <code>enabled</code>）</td></tr>
+            <tr><td><code>arenas.yml</code></td><td>地图数据（由命令自动维护）</td></tr>
+            <tr><td><code>stats.yml</code></td><td>玩家战绩</td></tr>
+            <tr><td><code>maps/&lt;地图名&gt;/</code></td><td>地图模板世界文件夹</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>常用配置项：</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>配置项</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>lobby.world</code></td><td>独立大厅世界名（留空 = 不启用）；插件从 <code>maps/&lt;世界名&gt;/</code> 复制</td></tr>
+            <tr><td><code>lobby.force-on-join</code></td><td>加入服务器后是否强制传送到大厅</td></tr>
+            <tr><td><code>lobby.npcs</code></td><td>大厅 NPC：<code>arena=地图名;location=x,y,z[,yaw,pitch]</code></td></tr>
+            <tr><td><code>game.start-countdown</code></td><td>达到最少人数后的准备倒计时（秒）</td></tr>
+            <tr><td><code>worlds.copy-template</code></td><td>true = 每局复制干净模板；false = 直接用服务器已有世界</td></tr>
+            <tr><td><code>events.bed-gone</code> / <code>game-end</code></td><td>所有床消失 / 强制结束的时间点（秒）</td></tr>
+            <tr><td><code>experience.values</code></td><td>经验模式下各资源的经验价值（铁1 / 金4 / 钻12 / 绿30）</td></tr>
+            <tr><td><code>shop.bulk-buy-amount</code></td><td>潜行点击一次购买的次数（默认 5）</td></tr>
+            <tr><td><code>misc.friendly-fire</code></td><td>是否开启友军伤害（默认 false）</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note tip"><strong>改完配置后执行 <code>/bw reload</code> 即可生效</strong>（地图数据会一并重载）。</div>
+    </section>
+
+    <section id="permissions">
+      <h2>权限</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>权限节点</th><th>默认</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>hybedwars.play</code></td><td>所有玩家</td><td>允许使用基础命令</td></tr>
+            <tr><td><code>hybedwars.admin</code></td><td>OP</td><td>允许管理地图与游戏</td></tr>
+            <tr><td><code>hybedwars.*</code></td><td>OP</td><td>包含以上两者</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="faq">
+      <h2>常见问题</h2>
+
+      <h4>Q：地图世界加载失败？</h4>
+      <p>检查 <code>plugins/HyBedWars/maps/&lt;地图名&gt;/</code> 是否存在（即是否执行过 <code>/bw arena done</code>），
+        以及服务端根目录下没有同名残留世界文件夹。</p>
+
+      <h4>Q：玩家死亡后一直在旁观？</h4>
+      <p>说明该队床已被摧毁，这是最终击杀的正常表现；<code>/bw leave</code> 可离开对局。</p>
+
+      <h4>Q：想用已有的服务器世界当竞技场？</h4>
+      <p>把 <code>worlds.copy-template</code> 设为 <code>false</code>，然后在编辑模式用 <code>/bw arena setworld</code>
+        绑定该世界名即可（此模式下插件不会删除或还原你的世界）。</p>
+
+      <h4>Q：想改中文提示 / 商店价格？</h4>
+      <p>直接编辑 <code>messages.yml</code> / <code>shop.yml</code>，然后 <code>/bw reload</code>。</p>
+
+      <h4>Q：开局进不去、死亡后回到奇怪的地方？</h4>
+      <p>多半是地图坐标为空。执行 <code>/bw arena info &lt;地图&gt;</code> 查看缺失项，
+        补齐队伍出生点、床、生成点后再 <code>/bw arena done</code>。</p>
+    </section>
+  </main>
+</div>
+
+<footer>
+  HyBedWars v1.0.0 <span class="dot">·</span> 适用于 Paper 1.20.5 <span class="dot">·</span> 修改配置后使用 /bw reload 热重载
+</footer>
+
+<button id="toTop" type="button" aria-label="回到顶部">↑</button>
+
+<script>
+  // 移动端目录
+  const menuBtn = document.getElementById('menuBtn');
+  const backdrop = document.getElementById('backdrop');
+  function closeNav(){ document.body.classList.remove('nav-open'); }
+  menuBtn && menuBtn.addEventListener('click', () => document.body.classList.toggle('nav-open'));
+  backdrop && backdrop.addEventListener('click', closeNav);
+  document.querySelectorAll('#toc a').forEach(a => a.addEventListener('click', closeNav));
+
+  // 目录高亮（滚动监听）
+  const links = Array.from(document.querySelectorAll('#toc a'));
+  const sections = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  if ('IntersectionObserver' in window) {
+    const map = new Map();
+    links.forEach(a => { const el = document.querySelector(a.getAttribute('href')); if (el) map.set(el, a); });
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          links.forEach(l => l.classList.remove('active'));
+          const a = map.get(e.target); if (a) a.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+    sections.forEach(s => io.observe(s));
+  }
+
+  // 代码块复制按钮
+  document.querySelectorAll('pre').forEach(pre => {
+    const btn = document.createElement('button');
+    btn.className = 'copy';
+    btn.type = 'button';
+    btn.textContent = '复制';
+    btn.addEventListener('click', async () => {
+      const code = pre.querySelector('code');
+      const text = code ? code.innerText : pre.innerText;
+      try {
+        await navigator.clipboard.writeText(text);
+        btn.textContent = '已复制';
+        setTimeout(() => { btn.textContent = '复制'; }, 1500);
+      } catch (err) {
+        btn.textContent = '复制失败';
+        setTimeout(() => { btn.textContent = '复制'; }, 1500);
+      }
+    });
+    pre.appendChild(btn);
+  });
+
+  // 命令筛选
+  const filter = document.getElementById('cmdFilter');
+  if (filter) {
+    filter.addEventListener('input', () => {
+      const q = filter.value.trim().toLowerCase();
+      document.querySelectorAll('table.cmd-table').forEach(table => {
+        let anyVisible = false;
+        table.querySelectorAll('tbody tr').forEach(tr => {
+          const hit = !q || tr.innerText.toLowerCase().includes(q);
+          tr.classList.toggle('hidden', !hit);
+          if (hit) anyVisible = true;
+        });
+        // 隐藏整张表（含表头）便于阅读
+        table.style.display = anyVisible || !q ? '' : 'none';
+      });
+    });
+  }
+
+  // 回到顶部
+  const toTop = document.getElementById('toTop');
+  window.addEventListener('scroll', () => {
+    toTop.classList.toggle('show', window.scrollY > 500);
+  }, { passive: true });
+  toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+</script>
+</body>
+</html>

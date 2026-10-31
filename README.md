@@ -2,6 +2,8 @@
 
 一个用 Java 21 / Paper API 1.20.5 编写的起床战争（BedWars）插件，玩法、经济、商店与升级体系完整对标 Hypixel BedWars。
 
+> 在线使用说明（图文版）：https://bilibiliethan.github.io/hybedwars-plugin/
+
 ---
 
 ## 一、支持的游戏模式
